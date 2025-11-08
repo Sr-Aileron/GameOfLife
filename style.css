@@ -77,6 +77,10 @@ h1, h3 {
     background-color: lightblue;
 }
 
+#config-wrapper {
+    margin-top: 10px;
+}
+
 .wrapper,.template {
     border: 1px solid #aaa;
 }
