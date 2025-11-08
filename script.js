@@ -1,16 +1,3 @@
-/* memo 修正・追加したい場所
-ver 1.1
-[+] テンプレートの見た目を整える 
-[+] テンプレートのスクロール機能の追加
-[+] テンプレートの回転機能
-[+] generationの表示
-[+] 実行速度調整機能
-[+] 場外をどう扱うかの機能
-
-ver 2.0
-[-] cssを整える
-*/
-
 // 定数
 const GRID_SIZE = 50;
 const gridContainer = document.getElementById("grid-container");
@@ -258,6 +245,7 @@ startButton.addEventListener('click', () => {
         stateIcon.style.backgroundColor = ('lightgreen');
         resetButton.disabled = 'disabled';
         speedSelect.disabled = 'disabled';
+        outOfGridCheck.disabled = 'disabled';
     }
 });
 
@@ -268,6 +256,7 @@ stopButton.addEventListener('click', () => {
         stateIcon.style.backgroundColor = ('red');
         resetButton.disabled = null;
         speedSelect.disabled = null;
+        outOfGridCheck.disabled = null;
     }
 });
 
@@ -295,17 +284,17 @@ rotateButton.addEventListener('click', () => {
         }
     }
 
+    selectedTempData.rowsize = colsize;
+    selectedTempData.colsize = rowsize;
     selectedTempData.shape = shapeRotated.map(row => row.reverse());
 })
 
 speedSelect.addEventListener('change', () => {
     speed = parseInt(speedSelect.value, 10);
-    console.log(`current speed: ${speed}`);
 });
 
 outOfGridCheck.addEventListener('change', () => {
     outOfGrid = outOfGrid === true ? false : true;
-    console.log(outOfGrid);
 })
 
 async function main() {
