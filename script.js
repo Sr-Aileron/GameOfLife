@@ -1,3 +1,12 @@
+/* memo 修正・追加したい場所
+- テンプレートの見た目を整える 
+- テンプレートのスクロール機能の追加
+- テンプレートの回転機能
+[-] 実行速度調整機能
+
+- cssを整える
+*/
+
 // 定数
 const GRID_SIZE = 50;
 const gridContainer = document.getElementById("grid-container");
@@ -9,9 +18,9 @@ let cellPlaceGrid = createEmptyGrid(); //配置予定のセルだけを格納
 let intervalId = null;
 let selectedTemplate = null; //DOM nodeを格納する
 let selectedTempData = {name: "", rowsize: 0, colsize: 0, shape: null};
+let speed = 100;
 
 gridContainer.addEventListener('mouseleave', () => {
-    console.log('grid container');
     cellPlaceGrid = createEmptyGrid()
     drawGrid();
 });
@@ -227,10 +236,18 @@ const startButton = document.getElementById('start-button');
 const stopButton = document.getElementById('stop-button');
 const resetButton = document.getElementById('reset-button');
 
+const speedSelect = document.getElementById('speed');
+speedSelect.addEventListener('change', () => {
+    speed = parseInt(speedSelect.value, 10);
+    console.log(`current speed: ${speed}`);
+});
+
 startButton.addEventListener('click', () => {
     if (intervalId === null) {
-        intervalId = setInterval(mainLoop, 200);
+        intervalId = setInterval(mainLoop, speed);
         stateIcon.style.backgroundColor = ('lightgreen');
+        resetButton.disabled = 'disabled';
+        speedSelect.disabled = 'disabled';
     }
 });
 
@@ -239,6 +256,8 @@ stopButton.addEventListener('click', () => {
         clearInterval(intervalId);
         intervalId = null;
         stateIcon.style.backgroundColor = ('red');
+        resetButton.disabled = null;
+        speedSelect.disabled = null;
     }
 });
 
