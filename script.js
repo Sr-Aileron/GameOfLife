@@ -8,7 +8,7 @@ let grid = createEmptyGrid();
 let cellPlaceGrid = createEmptyGrid(); //配置予定のセルだけを格納
 let intervalId = null;
 let selectedTemplate = null; //選択されているtemplateを格納する
-let selectedTempData = {name: "", rowsize: 0, colsize: 0, shape: null};
+let selectedTempData = null;
 let speed = 100;
 let generation = 0;
 let outOfGrid = false;
@@ -212,7 +212,6 @@ function invertCell(event) {
         placeTemplate();
         return;
     }
-
     const y = event.target.dataset.y;
     const x = event.target.dataset.x;
 
@@ -224,7 +223,8 @@ function invertCell(event) {
 function mainLoop() {
     computeNextGeneration();
     drawGrid();
-    generationCounter.innerHTML = `Generation: ${generation++}`;
+    generation++;
+    generationCounter.innerHTML = `Generation: ${generation}`;
 }
 
 //ボタンそれぞれが押された時の関数を定義
@@ -233,6 +233,7 @@ const generationCounter = document.getElementById('generation-counter');
 const stateIcon = document.getElementById('status-icon');
 const startButton = document.getElementById('start-button');
 const stopButton = document.getElementById('stop-button');
+const stepButton = document.getElementById('step-button');
 const resetButton = document.getElementById('reset-button');
 const rotateButton = document.getElementById('rotate-button');
 
@@ -243,6 +244,7 @@ startButton.addEventListener('click', () => {
     if (intervalId === null) {
         intervalId = setInterval(mainLoop, speed);
         stateIcon.style.backgroundColor = ('lightgreen');
+        stepButton.disabled = 'disabled';
         resetButton.disabled = 'disabled';
         speedSelect.disabled = 'disabled';
         outOfGridCheck.disabled = 'disabled';
@@ -254,10 +256,15 @@ stopButton.addEventListener('click', () => {
         clearInterval(intervalId);
         intervalId = null;
         stateIcon.style.backgroundColor = ('red');
+        stepButton.disabled = null;
         resetButton.disabled = null;
         speedSelect.disabled = null;
         outOfGridCheck.disabled = null;
     }
+});
+
+stepButton.addEventListener('click', () => {
+    mainLoop();
 });
 
 resetButton.addEventListener('click', () => {

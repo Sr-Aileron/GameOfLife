@@ -11,6 +11,7 @@
 <body>
 
     <h1>The Game of Life</h1>
+    <p>Version 1.1</p>
 
     <div id="main-wrapper">
 
@@ -23,6 +24,7 @@
                 <div id="status-icon"></div>
                 <button id="start-button">Start</button>
                 <button id="stop-button">Stop</button>
+                <button id="step-button">Step</button>
                 <button disabled id="rotate-button">Rotate</button>
                 <button id="reset-button">Reset</button>
             </div>
@@ -38,17 +40,23 @@
 
     <div id="config-wrapper" class="wrapper">
         <h3>Settings</h3>
-        <label for="speed">Speed: </label>
-        <select id="speed">
-            <option value="50">50ms</option>
-            <option selected value="100">100ms</option>
-            <option value="200">200ms</option>
-            <option value="300">300ms</option>
-            <option value="400">400ms</option>
-            <option value="500">500ms</option>
-        </select>
-        <label for="out-of-grid">Treat cells outside the grid as dead cells</label>
-        <input type="checkbox" id="out-of-grid">
+        <ul id="config-list">
+            <li>
+                <label for="speed">Speed: </label>
+                <select id="speed">
+                    <option value="50">50ms</option>
+                    <option selected value="100">100ms</option>
+                    <option value="200">200ms</option>
+                    <option value="300">300ms</option>
+                    <option value="400">400ms</option>
+                    <option value="500">500ms</option>
+                </select>
+            </li>
+            <li>
+                <label for="out-of-grid">Treat cells outside the grid as dead cells</label>
+                <input type="checkbox" id="out-of-grid">
+            </li>
+        </ul>
     </div>
 
     <script src="script.js"></script>

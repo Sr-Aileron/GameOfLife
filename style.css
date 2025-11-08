@@ -1,16 +1,27 @@
-body {
-    width: 90%;
-    max-width: 1000px;
-    margin: 0 auto;
+html {
+    background-color: #fff;
+    font-family: system-ui;
+    font-size: 16px;
 }
 
-h1, h3 {
+body {
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px;
+    background-color: rgb(241, 244, 249);
+}
+
+h1, h3, p {
     text-align: center;
+    text-decoration: none;
+    font-weight: normal;
 }
 
 #main-wrapper {
     display: flex;
     gap: 10px;
+    height: 620px;
 }
 
 #display-wrapper {
@@ -38,7 +49,7 @@ h1, h3 {
 }
 
 .cell.placed {
-    background-color: green;
+    background-color: rgb(162, 185, 221);
 }
 
 #controls {
@@ -47,6 +58,20 @@ h1, h3 {
     justify-content: center;
     align-items: center;
     margin-top: 10px;
+}
+
+#controls button {
+    border: none;
+    border-radius: 3px;
+}
+
+#controls button:hover {
+    background-color: #ccc;
+}
+
+#controls button:active {
+    background-color: rgb(162, 185, 221);
+    color: #fff;
 }
 
 #status-icon {
@@ -58,6 +83,7 @@ h1, h3 {
 
 #template-wrapper {
     flex: 1;
+    overflow-y: scroll;
 }
 
 #templates-container {
@@ -66,21 +92,50 @@ h1, h3 {
     gap: 10px;
     grid-template-columns: repeat(2, 1fr);
     grid-auto-rows: 80px;
-    overflow-y: scroll;
+}
+
+@media screen and (max-width: 880px) {
+    #main-wrapper {
+        flex-direction: column;
+        height: auto;
+    }
 }
 
 .template {
-    background-color: #fff;
+    background-color: #ccc;
+    font-size: 1rem;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.4s ease;
+}
+
+.template:hover {
+    background-color: #aaa;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .template.selected {
-    background-color: lightblue;
+    background-color: rgb(162, 185, 221);
 }
 
 #config-wrapper {
     margin-top: 10px;
+    padding: 20px;
 }
 
-.wrapper,.template {
-    border: 1px solid #aaa;
+#config-list {
+    width: 90%;
+    margin: 0 auto;
+}
+
+#config-list li {
+    padding: 10px 0;
+}
+
+.wrapper {
+    border: 2px solid #ccccff;
+    border-radius: 15px;
+    background-color: #fff;
 }
