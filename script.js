@@ -1,9 +1,13 @@
 /* memo 修正・追加したい場所
+ver 1.1
 [+] テンプレートの見た目を整える 
 [+] テンプレートのスクロール機能の追加
-[-] テンプレートの回転機能
+[+] テンプレートの回転機能
+[-] generationの表示
 [+] 実行速度調整機能
+[-] 場外をどう扱うかの機能
 
+ver 2.0
 [-] cssを整える
 */
 
@@ -16,7 +20,7 @@ const templatesContainer = document.getElementById("templates-container");
 let grid = createEmptyGrid();
 let cellPlaceGrid = createEmptyGrid(); //配置予定のセルだけを格納
 let intervalId = null;
-let selectedTemplate = null; //DOM nodeを格納する
+let selectedTemplate = null; //選択されているtemplateを格納する
 let selectedTempData = {name: "", rowsize: 0, colsize: 0, shape: null};
 let speed = 100;
 
@@ -98,6 +102,7 @@ async function initializeTemplate() {
                 event.target.classList.remove('selected');
                 selectedTemplate = null;
                 selectedTempData = null;
+                rotateButton.disabled = 'disabled';
             } else {
                 if (selectedTemplate !== null) selectedTemplate.classList.remove('selected');
 
@@ -110,6 +115,7 @@ async function initializeTemplate() {
                     colsize: parseInt(ds.colsize, 10),
                     shape: value
                 };
+                rotateButton.disabled = null;
             }
         });
         templatesContainer.appendChild(tmpElement);
@@ -220,9 +226,6 @@ function invertCell(event) {
     drawGrid();
 }
 
-
-//上のやつの表示
-
 //mainloop
 function mainLoop() {
     computeNextGeneration();
@@ -235,12 +238,8 @@ const stateIcon = document.getElementById('status-icon');
 const startButton = document.getElementById('start-button');
 const stopButton = document.getElementById('stop-button');
 const resetButton = document.getElementById('reset-button');
-
+const rotateButton = document.getElementById('rotate-button');
 const speedSelect = document.getElementById('speed');
-speedSelect.addEventListener('change', () => {
-    speed = parseInt(speedSelect.value, 10);
-    console.log(`current speed: ${speed}`);
-});
 
 startButton.addEventListener('click', () => {
     if (intervalId === null) {
@@ -270,6 +269,25 @@ resetButton.addEventListener('click', () => {
 
     grid = createEmptyGrid();
     drawGrid();
+});
+
+//回転処理
+rotateButton.addEventListener('click', () => {
+    const {rowsize, colsize, shape} = selectedTempData;
+    let shapeRotated = Array.from({ length: colsize}, () => Array(rowsize).fill(0));
+
+    for (let i = 0; i < colsize; i++) {
+        for (let j = 0; j < rowsize; j++) {
+            shapeRotated[i][j] = shape[j][i];
+        }
+    }
+
+    selectedTempData.shape = shapeRotated.map(row => row.reverse());
+})
+
+speedSelect.addEventListener('change', () => {
+    speed = parseInt(speedSelect.value, 10);
+    console.log(`current speed: ${speed}`);
 });
 
 async function main() {
