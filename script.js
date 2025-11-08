@@ -1,10 +1,10 @@
 /* memo 修正・追加したい場所
-- テンプレートの見た目を整える 
-- テンプレートのスクロール機能の追加
-- テンプレートの回転機能
-[-] 実行速度調整機能
+[+] テンプレートの見た目を整える 
+[+] テンプレートのスクロール機能の追加
+[-] テンプレートの回転機能
+[+] 実行速度調整機能
 
-- cssを整える
+[-] cssを整える
 */
 
 // 定数
@@ -89,7 +89,7 @@ async function initializeTemplate() {
         tmpElement.dataset.name = key;
         tmpElement.dataset.rowsize = `${value.length}`;
         tmpElement.dataset.colsize = `${value[0].length}`;
-        tmpElement.innerHTML = `${key.charAt(0).toUpperCase()}${key.slice(1)}`;
+        tmpElement.innerHTML = `${key.charAt(0).toUpperCase()}${key.slice(1).replace('_', '\n')}`;
 
         //クリックされた時の処理
         tmpElement.addEventListener('click', (event) => {
