@@ -7,11 +7,13 @@ const templatesContainer = document.getElementById("templates-container");
 let grid = createEmptyGrid();
 let cellPlaceGrid = createEmptyGrid(); //配置予定のセルだけを格納
 let intervalId = null;
-let selectedTemplate = null; //DOM nodeを格納する
+let selectedTemplate = null; //選択されているtemplateを格納する
 let selectedTempData = {name: "", rowsize: 0, colsize: 0, shape: null};
+let speed = 100;
+let generation = 0;
+let outOfGrid = false;
 
 gridContainer.addEventListener('mouseleave', () => {
-    console.log('grid container');
     cellPlaceGrid = createEmptyGrid()
     drawGrid();
 });
@@ -80,7 +82,7 @@ async function initializeTemplate() {
         tmpElement.dataset.name = key;
         tmpElement.dataset.rowsize = `${value.length}`;
         tmpElement.dataset.colsize = `${value[0].length}`;
-        tmpElement.innerHTML = `${key.charAt(0).toUpperCase()}${key.slice(1)}`;
+        tmpElement.innerHTML = `${key.charAt(0).toUpperCase()}${key.slice(1).replace('_', '\n')}`;
 
         //クリックされた時の処理
         tmpElement.addEventListener('click', (event) => {
@@ -89,6 +91,7 @@ async function initializeTemplate() {
                 event.target.classList.remove('selected');
                 selectedTemplate = null;
                 selectedTempData = null;
+                rotateButton.disabled = 'disabled';
             } else {
                 if (selectedTemplate !== null) selectedTemplate.classList.remove('selected');
 
@@ -101,6 +104,7 @@ async function initializeTemplate() {
                     colsize: parseInt(ds.colsize, 10),
                     shape: value
                 };
+                rotateButton.disabled = null;
             }
         });
         templatesContainer.appendChild(tmpElement);
@@ -108,7 +112,7 @@ async function initializeTemplate() {
 }
 
 /**
- * 自分の周りの盤面を計算する関数(場外は死んだセルとして扱う)
+ * 自分の周りの盤面を計算する関数
  * @param {int} y 
  * @param {int} x 
  * @return {int}
@@ -121,7 +125,12 @@ function countAliveNeighbor(y, x) {
 
             let cx = x + dx;
             let cy = y + dy;
+
             if (cx >= 0 && cx < GRID_SIZE && cy >= 0 && cy < GRID_SIZE) {
+                count += grid[cy][cx];
+            } else if (outOfGrid === false) {
+                cy = cy === -1 ? 49 : cy === 50 ? 0 : cy;
+                cx = cx === -1 ? 49 : cx === 50 ? 0 : cx;
                 count += grid[cy][cx];
             }
         }
@@ -211,26 +220,32 @@ function invertCell(event) {
     drawGrid();
 }
 
-
-//上のやつの表示
-
 //mainloop
 function mainLoop() {
     computeNextGeneration();
     drawGrid();
+    generationCounter.innerHTML = `Generation: ${generation++}`;
 }
 
 //ボタンそれぞれが押された時の関数を定義
+const generationCounter = document.getElementById('generation-counter');
 
 const stateIcon = document.getElementById('status-icon');
 const startButton = document.getElementById('start-button');
 const stopButton = document.getElementById('stop-button');
 const resetButton = document.getElementById('reset-button');
+const rotateButton = document.getElementById('rotate-button');
+
+const speedSelect = document.getElementById('speed');
+const outOfGridCheck = document.getElementById('out-of-grid');
 
 startButton.addEventListener('click', () => {
     if (intervalId === null) {
-        intervalId = setInterval(mainLoop, 200);
+        intervalId = setInterval(mainLoop, speed);
         stateIcon.style.backgroundColor = ('lightgreen');
+        resetButton.disabled = 'disabled';
+        speedSelect.disabled = 'disabled';
+        outOfGridCheck.disabled = 'disabled';
     }
 });
 
@@ -239,6 +254,9 @@ stopButton.addEventListener('click', () => {
         clearInterval(intervalId);
         intervalId = null;
         stateIcon.style.backgroundColor = ('red');
+        resetButton.disabled = null;
+        speedSelect.disabled = null;
+        outOfGridCheck.disabled = null;
     }
 });
 
@@ -251,7 +269,33 @@ resetButton.addEventListener('click', () => {
 
     grid = createEmptyGrid();
     drawGrid();
+    generation = 0;
+    generationCounter.innerHTML = 'Generation: 0';
 });
+
+//回転処理
+rotateButton.addEventListener('click', () => {
+    const {rowsize, colsize, shape} = selectedTempData;
+    let shapeRotated = Array.from({ length: colsize}, () => Array(rowsize).fill(0));
+
+    for (let i = 0; i < colsize; i++) {
+        for (let j = 0; j < rowsize; j++) {
+            shapeRotated[i][j] = shape[j][i];
+        }
+    }
+
+    selectedTempData.rowsize = colsize;
+    selectedTempData.colsize = rowsize;
+    selectedTempData.shape = shapeRotated.map(row => row.reverse());
+})
+
+speedSelect.addEventListener('change', () => {
+    speed = parseInt(speedSelect.value, 10);
+});
+
+outOfGridCheck.addEventListener('change', () => {
+    outOfGrid = outOfGrid === true ? false : true;
+})
 
 async function main() {
     initializeGrid();
