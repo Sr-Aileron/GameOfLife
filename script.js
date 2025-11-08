@@ -3,9 +3,9 @@ ver 1.1
 [+] テンプレートの見た目を整える 
 [+] テンプレートのスクロール機能の追加
 [+] テンプレートの回転機能
-[-] generationの表示
+[+] generationの表示
 [+] 実行速度調整機能
-[-] 場外をどう扱うかの機能
+[+] 場外をどう扱うかの機能
 
 ver 2.0
 [-] cssを整える
@@ -23,6 +23,8 @@ let intervalId = null;
 let selectedTemplate = null; //選択されているtemplateを格納する
 let selectedTempData = {name: "", rowsize: 0, colsize: 0, shape: null};
 let speed = 100;
+let generation = 0;
+let outOfGrid = false;
 
 gridContainer.addEventListener('mouseleave', () => {
     cellPlaceGrid = createEmptyGrid()
@@ -123,7 +125,7 @@ async function initializeTemplate() {
 }
 
 /**
- * 自分の周りの盤面を計算する関数(場外は死んだセルとして扱う)
+ * 自分の周りの盤面を計算する関数
  * @param {int} y 
  * @param {int} x 
  * @return {int}
@@ -136,7 +138,12 @@ function countAliveNeighbor(y, x) {
 
             let cx = x + dx;
             let cy = y + dy;
+
             if (cx >= 0 && cx < GRID_SIZE && cy >= 0 && cy < GRID_SIZE) {
+                count += grid[cy][cx];
+            } else if (outOfGrid === false) {
+                cy = cy === -1 ? 49 : cy === 50 ? 0 : cy;
+                cx = cx === -1 ? 49 : cx === 50 ? 0 : cx;
                 count += grid[cy][cx];
             }
         }
@@ -230,16 +237,20 @@ function invertCell(event) {
 function mainLoop() {
     computeNextGeneration();
     drawGrid();
+    generationCounter.innerHTML = `Generation: ${generation++}`;
 }
 
 //ボタンそれぞれが押された時の関数を定義
+const generationCounter = document.getElementById('generation-counter');
 
 const stateIcon = document.getElementById('status-icon');
 const startButton = document.getElementById('start-button');
 const stopButton = document.getElementById('stop-button');
 const resetButton = document.getElementById('reset-button');
 const rotateButton = document.getElementById('rotate-button');
+
 const speedSelect = document.getElementById('speed');
+const outOfGridCheck = document.getElementById('out-of-grid');
 
 startButton.addEventListener('click', () => {
     if (intervalId === null) {
@@ -269,6 +280,8 @@ resetButton.addEventListener('click', () => {
 
     grid = createEmptyGrid();
     drawGrid();
+    generation = 0;
+    generationCounter.innerHTML = 'Generation: 0';
 });
 
 //回転処理
@@ -289,6 +302,11 @@ speedSelect.addEventListener('change', () => {
     speed = parseInt(speedSelect.value, 10);
     console.log(`current speed: ${speed}`);
 });
+
+outOfGridCheck.addEventListener('change', () => {
+    outOfGrid = outOfGrid === true ? false : true;
+    console.log(outOfGrid);
+})
 
 async function main() {
     initializeGrid();

@@ -15,7 +15,7 @@
     <div id="main-wrapper">
 
         <div id="display-wrapper" class="wrapper">
-            <h3 id="generation-counter">Generation: </h3>
+            <h3 id="generation-counter">Generation: 0</h3>
 
             <div id="grid-container"></div>
 
@@ -47,6 +47,8 @@
             <option value="400">400ms</option>
             <option value="500">500ms</option>
         </select>
+        <label for="out-of-grid">Treat cells outside the grid as dead cells</label>
+        <input type="checkbox" id="out-of-grid">
     </div>
 
     <script src="script.js"></script>
